@@ -3,7 +3,7 @@ import { getSession } from "next-auth/react";
 
 // Create axios instance with base configuration
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "https://server-raxe.onrender.com",
+  baseURL: "https://server-raxe.onrender.com",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
