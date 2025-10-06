@@ -113,7 +113,7 @@ export function ContentManagement() {
     setEditingBanner(banner);
     setBannerForm({
       title: banner.title,
-      description: banner.description,
+      description: banner.description || "",
       link: banner.link || "",
       order: banner.order,
       isActive: banner.isActive,
@@ -172,7 +172,7 @@ export function ContentManagement() {
     setEditingOffer(offer);
     setOfferForm({
       title: offer.title,
-      description: offer.description,
+      description: offer.description || "",
       discount: offer.discount,
       validFrom: offer.validFrom.split("T")[0],
       validTo: offer.validTo.split("T")[0],

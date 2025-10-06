@@ -1,6 +1,67 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { JWT } from "next-auth/jwt";
 import { authApi } from "@/lib/api";
+
+// Define interfaces for type safety
+interface BackendUser {
+  id: string;
+  email: string;
+  first_name?: string;
+  firstName?: string;
+  last_name?: string;
+  lastName?: string;
+  role: string;
+  airline_id?: string;
+  airlineId?: string;
+}
+
+interface BackendAuthResponse {
+  user?: BackendUser;
+  access_token?: string;
+  accessToken?: string;
+  id?: string;
+  email?: string;
+  first_name?: string;
+  firstName?: string;
+  last_name?: string;
+  lastName?: string;
+  role?: string;
+  airline_id?: string;
+  airlineId?: string;
+}
+
+interface NextAuthUser extends User {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  firstName: string;
+  lastName: string;
+  airlineId?: string;
+  accessToken: string;
+}
+
+interface ExtendedJWT extends JWT {
+  role?: string;
+  firstName?: string;
+  lastName?: string;
+  airlineId?: string;
+  accessToken?: string;
+}
+
+interface ExtendedSession extends Session {
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    role: string;
+    firstName: string;
+    lastName: string;
+    airlineId?: string;
+  };
+  accessToken: string;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -27,18 +88,27 @@ export const authOptions: NextAuthOptions = {
 
           if (response.success && response.data) {
             // Handle the backend response structure which has user data nested
-            const backendData = response.data as any; // Cast to any to handle backend structure
+            const backendData = response.data as BackendAuthResponse; // Cast to interface instead of any
             const userData = backendData.user || backendData; // Handle both structures
 
-            const user = {
+            // Validate required fields
+            if (!userData.id || !userData.email || !userData.role) {
+              console.error("Missing required user data:", userData);
+              return null;
+            }
+
+            const user: NextAuthUser = {
               id: userData.id,
               email: userData.email,
-              name: `${userData.first_name || userData.firstName} ${userData.last_name || userData.lastName}`,
+              name:
+                `${userData.first_name || userData.firstName || ""} ${
+                  userData.last_name || userData.lastName || ""
+                }`.trim() || userData.email,
               role: userData.role,
-              firstName: userData.first_name || userData.firstName,
-              lastName: userData.last_name || userData.lastName,
+              firstName: userData.first_name || userData.firstName || "",
+              lastName: userData.last_name || userData.lastName || "",
               airlineId: userData.airline_id || userData.airlineId,
-              accessToken: backendData.access_token || backendData.accessToken,
+              accessToken: backendData.access_token || backendData.accessToken || "",
             };
             console.log("NextAuth user object:", user);
             return user;
@@ -54,7 +124,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: any; user?: any }) {
+    async jwt({ token, user }: { token: ExtendedJWT; user?: NextAuthUser }): Promise<ExtendedJWT> {
       if (user) {
         token.role = user.role;
         token.firstName = user.firstName;
@@ -64,14 +134,14 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
+    async session({ session, token }: { session: ExtendedSession; token: ExtendedJWT }): Promise<ExtendedSession> {
       if (token) {
         session.user.id = token.sub!;
-        session.user.role = token.role as string;
-        session.user.firstName = token.firstName as string;
-        session.user.lastName = token.lastName as string;
-        session.user.airlineId = token.airlineId as string;
-        session.accessToken = token.accessToken as string;
+        session.user.role = token.role || "";
+        session.user.firstName = token.firstName || "";
+        session.user.lastName = token.lastName || "";
+        session.user.airlineId = token.airlineId;
+        session.accessToken = token.accessToken || "";
       }
       return session;
     },

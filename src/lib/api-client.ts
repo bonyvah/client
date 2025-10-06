@@ -12,26 +12,26 @@ const apiClient = axios.create({
 
 // Request interceptor to add authentication token
 apiClient.interceptors.request.use(
-  async (config: any) => {
+  async (config) => {
     try {
       // Get token from NextAuth session
       const session = await getSession();
       const token = session?.accessToken;
 
-      if (token) {
+      if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
     } catch (error) {
       console.warn("Failed to get session token:", error);
       // Fallback to localStorage for manual token storage
       const localToken = localStorage.getItem("access_token");
-      if (localToken) {
+      if (localToken && config.headers) {
         config.headers.Authorization = `Bearer ${localToken}`;
       }
     }
     return config;
   },
-  (error: any) => {
+  (error: unknown) => {
     return Promise.reject(error);
   }
 );

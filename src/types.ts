@@ -151,7 +151,7 @@ export type StatisticsPeriod = "today" | "week" | "month" | "all";
 export interface Banner {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   imageUrl?: string;
   link?: string;
   isActive: boolean;
@@ -163,7 +163,7 @@ export interface Banner {
 export interface Offer {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   discount: number; // percentage
   validFrom: string;
   validTo: string;

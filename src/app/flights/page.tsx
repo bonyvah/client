@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import { FlightSearchForm } from "@/components/flight/FlightSearchForm";
 import { RoleBasedRedirect } from "@/components/layout/RoleBasedRedirect";
 import { calculateDiscount, formatPrice, formatTime, formatDate } from "@/lib/utils";
 
-export default function FlightsPage() {
+function FlightsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [flights, setFlights] = useState<Flight[]>([]);
@@ -299,7 +299,7 @@ export default function FlightsPage() {
               {/* Sort and Results Count */}
               <div className="flex justify-between items-center mb-6">
                 <div className="text-muted-foreground">{filteredFlights.length} flights found</div>
-                <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+                <Select value={sortBy} onValueChange={(value: "price" | "duration" | "departure") => setSortBy(value)}>
                   <SelectTrigger className="w-[200px]">
                     <SortAsc className="h-4 w-4 mr-2" />
                     <SelectValue />
@@ -422,5 +422,13 @@ export default function FlightsPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function FlightsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <FlightsContent />
+    </Suspense>
   );
 }

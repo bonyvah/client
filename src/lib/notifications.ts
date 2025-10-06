@@ -1,4 +1,5 @@
 // Browser notification utilities for flight reminders
+import { Booking } from "@/types";
 
 export interface FlightReminderOptions {
   flightNumber: string;
@@ -60,7 +61,7 @@ export class NotificationService {
   }
 
   // Schedule a flight reminder
-  scheduleFlightReminder(booking: any, hoursBeforeFlight: number = 24): void {
+  scheduleFlightReminder(booking: Booking, hoursBeforeFlight: number = 24): void {
     const flightTime = new Date(booking.flight.departureTime);
     const reminderTime = new Date(flightTime.getTime() - hoursBeforeFlight * 60 * 60 * 1000);
     const now = new Date();
@@ -102,7 +103,7 @@ export class NotificationService {
   }
 
   // Show flight reminder notification
-  private showFlightReminder(reminderData: any): void {
+  private showFlightReminder(reminderData: FlightReminderOptions): void {
     const { flightNumber, departure, origin, destination, hoursBeforeFlight } = reminderData;
     const departureTime = new Date(departure);
 
@@ -117,7 +118,7 @@ export class NotificationService {
   }
 
   // Setup reminders for all user bookings
-  setupBookingReminders(bookings: any[]): void {
+  setupBookingReminders(bookings: Booking[]): void {
     bookings.forEach((booking) => {
       if (booking.status === "confirmed") {
         // Schedule multiple reminders

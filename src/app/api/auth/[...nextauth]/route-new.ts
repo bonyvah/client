@@ -1,6 +1,37 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, Session, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { JWT } from "next-auth/jwt";
 import { authApi } from "@/lib/api";
+
+// Define interfaces for type safety
+interface NextAuthUser extends User {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  firstName: string;
+  lastName: string;
+  accessToken: string;
+}
+
+interface ExtendedJWT extends JWT {
+  role?: string;
+  firstName?: string;
+  lastName?: string;
+  accessToken?: string;
+}
+
+interface ExtendedSession extends Session {
+  user: {
+    id: string;
+    email: string;
+    name: string;
+    role: string;
+    firstName: string;
+    lastName: string;
+  };
+  accessToken: string;
+}
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -47,7 +78,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: { token: any; user?: any }) {
+    async jwt({ token, user }: { token: ExtendedJWT; user?: NextAuthUser }): Promise<ExtendedJWT> {
       if (user) {
         token.role = user.role;
         token.firstName = user.firstName;
@@ -56,13 +87,13 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
+    async session({ session, token }: { session: ExtendedSession; token: ExtendedJWT }): Promise<ExtendedSession> {
       if (token) {
         session.user.id = token.sub!;
-        session.user.role = token.role as string;
-        session.user.firstName = token.firstName as string;
-        session.user.lastName = token.lastName as string;
-        session.accessToken = token.accessToken as string;
+        session.user.role = token.role || "";
+        session.user.firstName = token.firstName || "";
+        session.user.lastName = token.lastName || "";
+        session.accessToken = token.accessToken || "";
       }
       return session;
     },

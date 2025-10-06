@@ -192,7 +192,10 @@ export function AdminStatistics() {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, value, percent }: any) => `${name}: ${value} (${(percent * 100).toFixed(0)}%)`}
+                    label={
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      ({ name, value, percent }: any) => `${name}: ${value} (${(percent * 100).toFixed(0)}%)`
+                    }
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"
@@ -223,7 +226,10 @@ export function AdminStatistics() {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    label={({ name, value, percent }: any) => `${name}: ${value} (${(percent * 100).toFixed(0)}%)`}
+                    label={
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      ({ name, value, percent }: any) => `${name}: ${value} (${(percent * 100).toFixed(0)}%)`
+                    }
                     outerRadius={80}
                     fill="#8884d8"
                     dataKey="value"

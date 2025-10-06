@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { RoleBasedRedirect } from "@/components/layout/RoleBasedRedirect";
 import { calculateDiscount, formatPrice, formatTime, formatFullDate } from "@/lib/utils";
 
-export default function BookFlightPage() {
+function BookFlightContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const flightId = searchParams.get("flightId");
@@ -180,7 +180,7 @@ export default function BookFlightPage() {
   const discountInfo = calculateDiscount(flight, offers);
   const pricePerPerson = discountInfo.discountAmount > 0 ? discountInfo.discountedPrice : flight.price;
   const totalPrice = pricePerPerson * passengers;
-  const totalSavings = discountInfo.discountAmount * passengers;
+  // Note: totalSavings was calculated but not used in UI
 
   return (
     <>
@@ -381,8 +381,8 @@ export default function BookFlightPage() {
                   </Button>
 
                   <p className="text-xs text-muted-foreground text-center">
-                    By clicking "Book Flight", you agree to our terms and conditions. This is a demo booking - no actual
-                    payment will be processed.
+                    By clicking &ldquo;Book Flight&rdquo;, you agree to our terms and conditions. This is a demo booking
+                    - no actual payment will be processed.
                   </p>
                 </div>
               </CardContent>
@@ -391,5 +391,13 @@ export default function BookFlightPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function BookFlightPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BookFlightContent />
+    </Suspense>
   );
 }

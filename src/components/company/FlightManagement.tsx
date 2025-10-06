@@ -226,7 +226,7 @@ export function FlightManagement({ airlineId }: FlightManagementProps) {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">Flight Management</h2>
-          <p className="text-muted-foreground">Manage your airline's flights</p>
+          <p className="text-muted-foreground">Manage your airline&apos;s flights</p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>

@@ -9,20 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Plane,
-  Calendar,
-  Clock,
-  Users,
-  MapPin,
-  Search,
-  Download,
-  CreditCard,
-  Tag,
-  X,
-  Bell,
-  BellOff,
-} from "lucide-react";
+import { Plane, Calendar, Clock, Users, MapPin, Search, Tag, X, Bell, BellOff } from "lucide-react";
 import { Booking, Offer } from "@/types";
 import { bookingApi, contentApi } from "@/lib/api";
 import { calculateDiscount, formatPrice } from "@/lib/utils";
@@ -388,7 +375,7 @@ export default function DashboardPage() {
                 <CardContent className="text-center py-8">
                   <Plane className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                   <h3 className="text-lg font-medium mb-2">No bookings found</h3>
-                  <p className="text-muted-foreground mb-4">You haven't booked any flights yet.</p>
+                  <p className="text-muted-foreground mb-4">You haven&apos;t booked any flights yet.</p>
                   <Button asChild>
                     <a href="/flights">Search Flights</a>
                   </Button>

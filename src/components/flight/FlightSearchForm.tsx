@@ -85,7 +85,7 @@ export function FlightSearchForm({ onSearch, showCard = true, initialValues }: F
     }
   };
 
-  const updateSearchParams = (field: keyof FlightSearchParams, value: any) => {
+  const updateSearchParams = (field: keyof FlightSearchParams, value: string | number) => {
     setSearchParams((prev) => ({ ...prev, [field]: value }));
   };
 
