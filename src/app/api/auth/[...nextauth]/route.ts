@@ -3,6 +3,10 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 import { authApi } from "@/lib/api";
 
+// Hardcode environment variables for production
+process.env.NEXTAUTH_URL = "https://asmanga-uch.vercel.app";
+process.env.NEXTAUTH_SECRET = "asmanga-super-secret-key-for-production-2024";
+
 // Define interfaces for type safety
 interface BackendUser {
   id: string;
@@ -64,6 +68,7 @@ interface ExtendedSession extends Session {
 }
 
 export const authOptions: NextAuthOptions = {
+  secret: "asmanga-super-secret-key-for-production-2024",
   providers: [
     CredentialsProvider({
       name: "credentials",
